@@ -7,7 +7,6 @@ const port = 3000;
 const cors = require('cors');
 app.use(cors());
 
-// Configuração do Supabase
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -30,7 +29,6 @@ app.get('/dados', async (req, res) => {
     res.json(data);
 });
 
-// Iniciar o servidor
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
