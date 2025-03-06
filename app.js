@@ -4,6 +4,8 @@ const { createClient } = require('@supabase/supabase-js');
  
 const app = express();
 const port = 3000;
+const cors = require('cors');
+app.use(cors());
 
 // Configuração do Supabase
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
