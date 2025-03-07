@@ -44,15 +44,18 @@ app.get('/usuario/:id', async (req, res) => {
     }
 
     try {
-        // Buscar o usuário na tabela do Supabase
+        // Buscar itens na tabela relacionados ao ID do usuário
         const { data, error } = await supabase
-            .from('usuario') // Substitua pelo nome correto da tabela que armazena os usuários
+            .from('tabela1') // Substitua pelo nome correto da tabela
             .select('*')
-            .eq('id', id)
-            .single(); // Garante que apenas um usuário será retornado
+            .eq('user_id', id); // Certifique-se de que a coluna 'user_id' existe e é usada para associar itens ao usuário
 
         if (error) {
-            return res.status(404).json({ message: 'Usuário não encontrado', error });
+            return res.status(500).json({ message: 'Erro ao buscar itens do usuário', error });
+        }
+
+        if (!data || data.length === 0) {
+            return res.status(404).json({ message: 'Nenhum item encontrado para este usuário.' });
         }
 
         res.status(200).json(data);
