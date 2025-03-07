@@ -36,6 +36,31 @@ app.get('/current-user', async (req, res) => {
     res.json({ userId: user.id });
 });
 
+app.get('/usuario/:id', async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: 'ID do usuário não fornecido' });
+    }
+
+    try {
+        // Buscar o usuário na tabela do Supabase
+        const { data, error } = await supabase
+            .from('usuario') // Substitua pelo nome correto da tabela que armazena os usuários
+            .select('*')
+            .eq('id', id)
+            .single(); // Garante que apenas um usuário será retornado
+
+        if (error) {
+            return res.status(404).json({ message: 'Usuário não encontrado', error });
+        }
+
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(500).json({ message: 'Erro interno do servidor', error: err.message });
+    }
+});
+
 app.post('/dados', async (req, res) => {
     const { name, situation, user_id } = req.body;
     const { data, error } = await supabase.from('tabela1').insert([{ name, situation, user_id }]);
