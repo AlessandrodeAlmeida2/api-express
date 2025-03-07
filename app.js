@@ -58,6 +58,54 @@ app.delete('/dados/:id', async (req, res) => {
     res.status(204).send();
 });
 
+app.delete('/delete-item/:id', async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: 'ID do item não fornecido' });
+    }
+
+    try {
+        // Obtenha o item a ser deletado para capturar o caminho da imagem
+        const { data: item, error: fetchError } = await supabase
+            .from('tabela1')
+            .select('photo_url')
+            .eq('id', id)
+            .single();
+
+        if (fetchError || !item) {
+            return res.status(404).json({ message: 'Item não encontrado', error: fetchError });
+        }
+
+        // Extrair o caminho do arquivo da URL da foto
+        const path = item.photo_url.split('/').pop();
+
+        // Remova a imagem do bucket do Supabase
+        const { error: storageError } = await supabase
+            .storage
+            .from('PI_Bucket')
+            .remove([path]);
+
+        if (storageError) {
+            return res.status(500).json({ message: 'Erro ao remover a imagem do bucket', error: storageError });
+        }
+
+        // Deleta o item da tabela
+        const { error: deleteError } = await supabase
+            .from('tabela1')
+            .delete()
+            .eq('id', id);
+
+        if (deleteError) {
+            return res.status(500).json({ message: 'Erro ao deletar o item da tabela', error: deleteError });
+        }
+
+        res.status(200).json({ message: 'Item e imagem removidos com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
+    }
+});
+
 app.get('/dados', async (req, res) => {
     const situation = req.query.situation;
     let query = supabase.from('tabela1').select('*');
