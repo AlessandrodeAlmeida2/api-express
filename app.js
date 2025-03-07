@@ -36,33 +36,34 @@ app.get('/current-user', async (req, res) => {
     res.json({ userId: user.id });
 });
 
-app.get('/usuario/:id', async (req, res) => {
-    const { id } = req.params;
-
-    if (!id) {
-        return res.status(400).json({ message: 'ID do usuário não fornecido' });
+app.get('/dados', async (req, res) => {
+    const situation = req.query.situation; // Recupera 'situation' da query
+    const user_id = req.query.user_id; // Recupera 'user_id' da query
+  
+    if (!user_id) {
+      return res.status(400).json({ message: 'Parâmetro user_id não fornecido' });
     }
-
+  
     try {
-        // Buscar itens na tabela relacionados ao ID do usuário
-        const { data, error } = await supabase
-            .from('tabela1') // Substitua pelo nome correto da tabela
-            .select('*')
-            .eq('user_id', id); // Certifique-se de que a coluna 'user_id' existe e é usada para associar itens ao usuário
-
-        if (error) {
-            return res.status(500).json({ message: 'Erro ao buscar itens do usuário', error });
-        }
-
-        if (!data || data.length === 0) {
-            return res.status(404).json({ message: 'Nenhum item encontrado para este usuário.' });
-        }
-
-        res.status(200).json(data);
-    } catch (err) {
-        res.status(500).json({ message: 'Erro interno do servidor', error: err.message });
+      let query = supabase.from('tabela1').select('*');
+  
+      // Aplica filtros condicionais
+      query = query.eq('user_id', user_id); // Filtro pelo user_id
+      if (situation) {
+        query = query.eq('situation', situation); // Filtro por situation, se fornecido
+      }
+  
+      const { data, error } = await query;
+  
+      if (error) {
+        return res.status(500).json({ message: 'Erro ao buscar dados', error });
+      }
+  
+      res.status(200).json(data);
+    } catch (error) {
+      res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
     }
-});
+  });  
 
 app.post('/dados', async (req, res) => {
     const { name, situation, user_id } = req.body;
