@@ -36,7 +36,7 @@ app.get('/current-user', async (req, res) => {
     res.json({ userId: user.id });
 });
 
-app.get('/dados', async (req, res) => {
+app.get('/dados/:id', async (req, res) => {
     const situation = req.query.situation; // Recupera 'situation' da query
     const user_id = req.query.user_id; // Recupera 'user_id' da query
   
@@ -63,7 +63,7 @@ app.get('/dados', async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
     }
-  });  
+  }); 
 
 app.post('/dados', async (req, res) => {
     const { name, situation, user_id } = req.body;
