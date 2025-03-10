@@ -5,7 +5,17 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const port = 3000;
 const cors = require('cors');
-app.use(cors());
+
+// Configuração do CORS para permitir apenas o frontend local
+app.use(cors({
+  origin: 'http://localhost:5173', // Permite apenas esta origem
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
+  credentials: true // Se precisar de credenciais (cookies, autenticação)
+}));
+
+// Handler para requisições OPTIONS
+app.options('*', cors()); // Responde a todas as requisições OPTIONS
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
