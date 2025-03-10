@@ -48,7 +48,7 @@ app.get('/user-profile/:userId', async (req, res) => {
       const { data, error } = await supabase
         .from('usuario')  // Usando a tabela 'usuario' em vez de 'tabela1'
         .select('*')
-        .eq('user_id', userId)
+        .eq('id', userId)
         .single();  // Assume que só há um registro por usuário
       
       if (error) {
@@ -78,7 +78,7 @@ app.get('/user-profile/:userId', async (req, res) => {
       const { data, error } = await supabase
         .from('usuario')
         .update({ nameUser, cel })
-        .eq('user_id', userId);
+        .eq('id', userId);
       
       if (error) {
         return res.status(500).json({ message: 'Erro ao atualizar dados do usuário', error });
