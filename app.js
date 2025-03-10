@@ -33,14 +33,14 @@ app.get('/current-user', async (req, res) => {
         return res.status(401).json({ message: 'Token inválido', error });
     }
 
-    res.json({ id: user.id });
+    res.json({ userId: user.id });
 });
 
-app.get('/usuario/:id', async (req, res) => {
+app.get('/usuario/:userId', async (req, res) => {
     const situation = req.query.situation; // Recupera 'situation' da query
     const user_id = req.query.user_id; // Recupera 'user_id' da query
   
-    if (!id) {
+    if (!user_id) {
       return res.status(400).json({ message: 'Parâmetro user_id não fornecido' });
     }
   
@@ -48,7 +48,7 @@ app.get('/usuario/:id', async (req, res) => {
       let query = supabase.from('tabela1').select('*');
   
       // Aplica filtros condicionais
-      query = query.eq('user_id', id); // Filtro pelo user_id
+      query = query.eq('user_id', user_id); // Filtro pelo user_id
       if (situation) {
         query = query.eq('situation', situation); // Filtro por situation, se fornecido
       }
