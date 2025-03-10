@@ -36,6 +36,60 @@ app.get('/current-user', async (req, res) => {
     res.json({ userId: user.id });
 });
 
+// Rota para buscar dados de um usuário específico pela tabela 'usuario'
+app.get('/user-profile/:userId', async (req, res) => {
+    const { userId } = req.params;
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'ID do usuário não fornecido' });
+    }
+    
+    try {
+      const { data, error } = await supabase
+        .from('usuario')  // Usando a tabela 'usuario' em vez de 'tabela1'
+        .select('*')
+        .eq('user_id', userId)
+        .single();  // Assume que só há um registro por usuário
+      
+      if (error) {
+        return res.status(500).json({ message: 'Erro ao buscar dados do usuário', error });
+      }
+      
+      if (!data) {
+        return res.status(404).json({ message: 'Usuário não encontrado' });
+      }
+      
+      res.status(200).json(data);
+    } catch (error) {
+      res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
+    }
+  });
+  
+  // Rota para atualizar dados de um usuário específico
+  app.put('/user-profile/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const { nameUser, cel } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'ID do usuário não fornecido' });
+    }
+    
+    try {
+      const { data, error } = await supabase
+        .from('usuario')
+        .update({ nameUser, cel })
+        .eq('user_id', userId);
+      
+      if (error) {
+        return res.status(500).json({ message: 'Erro ao atualizar dados do usuário', error });
+      }
+      
+      res.status(200).json({ message: 'Dados do usuário atualizados com sucesso' });
+    } catch (error) {
+      res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
+    }
+  });
+
 app.get('/usuario/:userId', async (req, res) => {
     const situation = req.query.situation; // Recupera 'situation' da query
     const user_id = req.query.user_id; // Recupera 'user_id' da query
@@ -136,6 +190,19 @@ app.delete('/delete-item/:id', async (req, res) => {
 });
 
 app.get('/dados', async (req, res) => {
+    const situation = req.query.situation;
+    let query = supabase.from('tabela1').select('*');
+
+    if (situation) {
+        query = query.eq('situation', situation);
+    }
+
+    const { data, error } = await query;
+    if (error) return res.status(400).send(error);
+    res.json(data);
+});
+
+app.get('/dados/:id', async (req, res) => {
     const situation = req.query.situation;
     let query = supabase.from('tabela1').select('*');
 
