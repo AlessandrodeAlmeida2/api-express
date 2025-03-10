@@ -36,7 +36,7 @@ app.get('/current-user', async (req, res) => {
     res.json({ userId: user.id });
 });
 
-app.get('/dados/:id', async (req, res) => {
+app.get('/usuario/:id', async (req, res) => {
     const situation = req.query.situation; // Recupera 'situation' da query
     const user_id = req.query.user_id; // Recupera 'user_id' da query
   
