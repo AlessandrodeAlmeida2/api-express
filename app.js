@@ -63,7 +63,7 @@ app.get('/usuario/:userId', async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
     }
-  }); 
+});
 
 app.post('/dados', async (req, res) => {
     const { name, situation, user_id } = req.body;
