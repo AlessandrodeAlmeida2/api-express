@@ -8,7 +8,7 @@ const cors = require('cors');
 
 // Configuração do CORS para permitir apenas o frontend local
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://busca-pet-express.vercel.app/'],
+  origin: ['http://localhost:5173', 'https://busca-pet-express.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
   credentials: true // Se precisar de credenciais (cookies, autenticação)
