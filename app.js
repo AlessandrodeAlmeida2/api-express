@@ -218,7 +218,7 @@ app.get('/dados/:id', async (req, res) => {
     const { data, error } = await supabase
         .from('tabela1')
         .select('*')
-        .eq('id', id).single();
+        .eq('id', id);
 
     if (error) {
         return res.status(500).json({ error: 'Erro ao buscar o dado por ID' });
