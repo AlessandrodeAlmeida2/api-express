@@ -213,15 +213,18 @@ app.get('/dados', async (req, res) => {
 });
 
 app.get('/dados/:id', async (req, res) => {
-    const situation = req.query.situation;
-    let query = supabase.from('tabela1').select('*');
+    const { id } = req.params;
 
-    if (situation) {
-        query = query.eq('situation', situation);
+    const { data, error } = await supabase
+        .from('tabela1')
+        .select('*')
+        .eq('id', id)
+        .single(); // garante que só vem um objeto, não um array
+
+    if (error) {
+        return res.status(500).json({ error: 'Erro ao buscar o dado por ID' });
     }
 
-    const { data, error } = await query;
-    if (error) return res.status(400).send(error);
     res.json(data);
 });
 
